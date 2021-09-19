@@ -16,7 +16,6 @@ const options = {
       console.log(err);
     } else {
       console.log(response);
-      console.log("успех");
     };
   }
 };
@@ -41,12 +40,12 @@ const createRequest = options => {
   
       xhr.open(options.method, options.url);
       xhr.send(formData);
-    };
+    }
 
-    options.callback(null, xhr.response);
-  }
-  catch (e) {
+    xhr.onload = () => options.callback(null, xhr.response);
+
+  } catch (e) {
     // перехват сетевой ошибки
-    options.callback(e);
+    xhr.onerror = () => options.callback(e);
   }
 };

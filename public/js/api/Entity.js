@@ -27,8 +27,8 @@ class Entity {
    * Это могут быть счета или доходы/расходы
    * (в зависимости от того, что наследуется от Entity)
    * */
-  
   static list(data, callback) {
+    //options.url = "/account";
 
     options.url = this.URL;
 
@@ -37,9 +37,10 @@ class Entity {
     options.data.password = data.password;
 
     options.method = 'GET';
+
+    options.callback = callback;
     
     createRequest(options);
-
   };
   
 
