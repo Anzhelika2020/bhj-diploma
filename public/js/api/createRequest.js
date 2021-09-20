@@ -7,9 +7,12 @@ const options = {
     password: "demo",
     name: "demo",
     id: "1",
-    account_id: "1"
+    account_id: "1",
+    sum: 5000,
+    type: "expense",
+    user_id: "1"
   }, 
-  method: 'POST',
+  method: 'GET',
   callback: (err, response) => {
     if (err) {
       console.log(err);
@@ -49,12 +52,15 @@ const createRequest = options => {
   
     } else {
       const formData = new FormData;
-     
+      
       formData.append('email', options.data.email);
       formData.append('password', options.data.password);
       formData.append('name', options.data.name);
       formData.append('id', options.data.id);
       formData.append('account_id', options.data.account_id);
+      formData.append('type', options.data. type);
+      formData.append('sum', options.data.sum);
+      formData.append('user_id', options.data.user_id);
   
       xhr.open(options.method, options.url);
       xhr.send(formData);

@@ -1,49 +1,53 @@
-/**
- * Класс User управляет авторизацией, выходом и
- * регистрацией пользователя из приложения
- * Имеет свойство URL, равное '/user'.
- * */
+/*
+Класс User управляет авторизацией, выходом и регистрацией пользователя из приложения
+Имеет свойство URL, равное '/user'.
+*/
+
 class User {
   static URL = "/user";
-  
-  /**
-   * Устанавливает текущего пользователя в
-   * локальном хранилище.
-   * */
+
+  //Устанавливает текущего пользователя в локальном хранилище.
   static setCurrent(user) {
+    localStorage.user = JSON.stringify(user);
+  };
 
-  }
-
-  /**
-   * Удаляет информацию об авторизованном
-   * пользователе из локального хранилища.
-   * */
+  //Удаляет информацию об авторизованном пользователе из локального хранилища.
   static unsetCurrent() {
-
+    delete localStorage.user;
   }
 
-  /**
-   * Возвращает текущего авторизованного пользователя
-   * из локального хранилища
-   * */
+  //Возвращает текущего авторизованного пользователя из локального хранилища
   static current() {
+    if(localStorage.user) {
+      return JSON.parse(localStorage.user);
+    } else {
+      return undefined;
+    };
+  };
 
-  }
-
-  /**
-   * Получает информацию о текущем
-   * авторизованном пользователе.
-   * */
+  //Получает информацию о текущем авторизованном пользователе.
   static fetch(callback) {
+    options.url = `${this.URL}/current`;
 
-  }
+    options.method = 'GET';
 
-  /**
-   * Производит попытку авторизации.
-   * После успешной авторизации необходимо
-   * сохранить пользователя через метод
-   * User.setCurrent.
-   * */
+    options.callback = (err, response) => {
+      if (response.success) {
+        User.setCurrent(response.user);
+      } else {
+        User.unsetCurrent()
+      };
+
+      callback(err, response);
+    };
+
+    createRequest(options);
+  };
+
+  /*
+  Производит попытку авторизации. После успешной авторизации необходимо
+  сохранить пользователя через метод User.setCurrent.
+  */
   static login(data, callback) {
     createRequest({
       url: this.URL + '/login',
@@ -57,23 +61,47 @@ class User {
         callback(err, response);
       }
     });
-  }
+  };
 
-  /**
-   * Производит попытку регистрации пользователя.
-   * После успешной авторизации необходимо
-   * сохранить пользователя через метод
-   * User.setCurrent.
-   * */
+  /*
+  Производит попытку регистрации пользователя. После успешной авторизации необходимо
+  сохранить пользователя через метод User.setCurrent.
+  */
   static register(data, callback) {
+    options.url = `${this.URL}/register`;
 
-  }
+    options.method = 'POST';
 
-  /**
-   * Производит выход из приложения. После успешного
-   * выхода необходимо вызвать метод User.unsetCurrent
-   * */
+    options.data = data;
+
+    options.callback = (err, response) => {
+      if (response.success) {
+        User.setCurrent(response.user);
+      };
+
+      callback(err, response);
+    };
+
+    createRequest(options);
+  };
+
+  /*
+  Производит выход из приложения. 
+  После успешного выхода необходимо вызвать метод User.unsetCurrent
+  */
   static logout(callback) {
+    options.url = `${this.URL}/logout`;
 
-  }
-}
+    options.method = 'POST';
+
+    options.callback = (err, response) => {
+      if (response.success) {
+        User.unsetCurrent();
+      };
+
+      callback(err, response);
+    };
+
+    createRequest(options);
+  };
+};
