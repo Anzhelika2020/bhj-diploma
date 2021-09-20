@@ -4,6 +4,7 @@
  * В первую очередь это открытие или
  * закрытие имеющихся окон
  * */
+
 class Modal {
   /**
    * Устанавливает текущий элемент в свойство element
@@ -12,8 +13,11 @@ class Modal {
    * необходимо выкинуть ошибку.
    * */
   constructor(element){
+    this.element = element;
 
   }
+
+  
 
   /**
    * При нажатии на элемент с data-dismiss="modal"
@@ -45,3 +49,30 @@ class Modal {
 
   }
 }
+
+const registerModalBtn = document.querySelector(".menu-item_register");
+const loginModalBtn = document.querySelector(".menu-item_login");
+const createAccountBtn = document.querySelector(".create-account");
+const createIncomeButton = document.querySelector(".create-income-button");
+const createExpenseButton = document.querySelector(".create-expense-button");
+
+registerModalBtn.onclick = function() {
+  App.modals.register.element.style.display = "block";
+};
+
+loginModalBtn.onclick = function() {
+  App.modals.login.element.style.display = "block";
+};
+
+createAccountBtn.onclick = function() {
+  App.modals.createAccount.element.style.display = "block";
+};
+
+createIncomeButton.onclick = function() {
+  App.modals.newIncome.element.style.display = "block";
+};
+
+createExpenseButton.onclick = function() {
+  App.modals.newExpense.element.style.display = "block";
+};
+
