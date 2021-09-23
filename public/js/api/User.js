@@ -20,6 +20,7 @@ class User {
   static current() {
     if(localStorage.user) {
       return JSON.parse(localStorage.user);
+
     } else {
       return undefined;
     };
@@ -32,7 +33,7 @@ class User {
     options.method = 'GET';
 
     options.callback = (err, response) => {
-      if (response.success) {
+      if (response.success || response.user !== undefined) {
         User.setCurrent(response.user);
       } else {
         User.unsetCurrent()
@@ -57,6 +58,7 @@ class User {
       callback: (err, response) => {
         if (response && response.user) {
           this.setCurrent(response.user);
+          App.setState('user-logged');
         }
         callback(err, response);
       }
@@ -76,7 +78,9 @@ class User {
 
     options.callback = (err, response) => {
       if (response.success) {
+        console.log(response.user);
         User.setCurrent(response.user);
+        App.setState('user-logged');
       };
 
       callback(err, response);
@@ -97,6 +101,7 @@ class User {
     options.callback = (err, response) => {
       if (response.success) {
         User.unsetCurrent();
+        App.setState('init');
       };
 
       callback(err, response);

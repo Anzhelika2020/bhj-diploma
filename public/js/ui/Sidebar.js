@@ -33,11 +33,34 @@ class Sidebar {
   /**
    * При нажатии на кнопку входа, показывает окно входа
    * (через найденное в App.getModal)
-   * При нажатии на кнопку регастрации показывает окно регистрации
+   * При нажатии на кнопку регистрации показывает окно регистрации
    * При нажатии на кнопку выхода вызывает User.logout и по успешному
    * выходу устанавливает App.setState( 'init' )
    * */
   static initAuthLinks() {
+    let modalLoginName = document.getElementById("modal-login").dataset.modalId;
 
-  }
-}
+    document.querySelector(".menu-item_login").onclick = () => App.getModal(modalLoginName).open();
+
+    let modalRegisterName = document.getElementById("modal-register").dataset.modalId;
+
+    document.querySelector(".menu-item_register").onclick = () => App.getModal(modalRegisterName).open();
+
+    /*
+    Зачем через App.getModal()? можно же проще сразу по имени св-ва:
+    document.querySelector(".menu-item_login").onclick = () => App.modals.login.open();
+    document.querySelector(".menu-item_register").onclick = () => App.modals.register.open();
+    */
+   document.querySelector(".menu-item_logout").onclick = () => User.logout(callback);
+
+//App.setState('init') установлено в User.logout(callback)
+/*
+    document.querySelector(".menu-item_logout").onclick = () => {
+      User.logout(callback);
+      App.setState(User.current() ? "user-logged" : "init");
+    };
+*/
+
+
+  };
+};

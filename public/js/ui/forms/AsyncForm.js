@@ -7,22 +7,28 @@
  * */
 class AsyncForm {
   /**
-   * Если переданный элемент не существует,
-   * необходимо выкинуть ошибку.
-   * Сохраняет переданный элемент и регистрирует события
-   * через registerEvents()
+   * Если переданный элемент не существует, необходимо выкинуть ошибку.
+   * Сохраняет переданный элемент и регистрирует события через registerEvents()
    * */
   constructor(element) {
+    if (element) {
+      this.element = element;
+      this.registerEvents();
 
-  }
+    } else {
+      throw new Error ("Модальное окно не существует");
+    };
+  };
 
-  /**
-   * Необходимо запретить отправку формы и в момент отправки
-   * вызывает метод submit()
-   * */
+//Необходимо запретить отправку формы и в момент отправки вызывает метод submit()
+
   registerEvents() {
-
-  }
+    this.element.onsubmit = e => {
+      e.preventDefault();
+      this.submit();
+      this.element.reset();
+    };
+  };
 
   /**
    * Преобразует данные формы в объект вида
@@ -32,18 +38,27 @@ class AsyncForm {
    * }
    * */
   getData() {
+    const data = {};
+    const formData = new FormData(this.element);
 
-  }
+    const entries = formData.entries();
 
+    for (let item of entries) {
+      let key = item[0];
+      let value = item[1];
+      data[key] = `${value}`;
+    };
+    return data;
+  };
+
+//Пустой метод. Пригодится для дальнейших форм, что будут унаследованы от AsyncForm. 
   onSubmit(options){
+    console.log(options);
+  };
 
-  }
 
-  /**
-   * Вызывает метод onSubmit и передаёт туда
-   * данные, полученные из метода getData()
-   * */
+//Вызывает метод onSubmit и передаёт туда данные, полученные из метода getData()
   submit() {
-
-  }
-}
+    this.onSubmit(this.getData());
+  };
+};

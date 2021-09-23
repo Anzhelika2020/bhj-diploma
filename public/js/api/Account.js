@@ -7,7 +7,7 @@ let callback = (err, response) => {
     console.log(response);
   };
 }
-
+/*
 let data = {
   email: "demo@demo",
   password: "demo",
@@ -17,7 +17,7 @@ let data = {
   sum: 5000,
   type: "expense",
   user_id: "1"
-}
+};
 
 let user = {
   email: "demo@demo",
@@ -26,7 +26,7 @@ let user = {
   id: "1",
   account_id: "1"
 };
-/*
+
 let data3 = {
   email: "demodemo.ru",
   id: "lw0z95nkktsobpvh",
