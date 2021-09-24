@@ -1,3 +1,5 @@
+"use strict";
+
 /*
 Класс User управляет авторизацией, выходом и регистрацией пользователя из приложения
 Имеет свойство URL, равное '/user'.
@@ -33,7 +35,7 @@ class User {
     options.method = 'GET';
 
     options.callback = (err, response) => {
-      if (response.success || response.user !== undefined) {
+      if (response.success && response.user !== undefined) {
         User.setCurrent(response.user);
       } else {
         User.unsetCurrent()
@@ -101,7 +103,7 @@ class User {
     options.callback = (err, response) => {
       if (response.success) {
         User.unsetCurrent();
-        App.setState('init');
+        //App.setState('init'); //почему здеь его не установить?, а в Sidevar.js в initAuthLinks() прописывать?
       };
 
       callback(err, response);

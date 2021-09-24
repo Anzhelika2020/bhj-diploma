@@ -1,5 +1,5 @@
 "use strict";
-
+/*  
 const options = {
   url: "/user/login", 
   data: {
@@ -15,13 +15,15 @@ const options = {
   method: 'GET',
   callback: (err, response) => {
     if (err) {
-      console.log(err);
-    } else {
-      console.log(response);
-    };
-  }
-};
+    console.error(err);
+    alert("Ошибка при получении ответа с сервера");
+    throw new Error("Ошибка при получении ответа с сервера");
 
+  } else {
+    console.log(response);
+  };
+};
+*/
 
 function getUrlRqstGET(data) {
   let url = "";
@@ -32,8 +34,26 @@ function getUrlRqstGET(data) {
   url = Array.from(url);
   url[0] = "?"; 
   return url.join("");
-}
+};
+/*
+function callback (err, response) {
+  if (err) {
+    console.log(err);
+    console.error(err);
+    alert("Ошибка при получении ответа с сервера");
+    throw new Error("Ошибка при получении ответа с сервера");
 
+  } else {
+    console.log(response);
+  };
+};
+*/
+let options = {
+  url: "", 
+  data: {}, 
+  method: "",
+  callback: ""
+};
 
 //Основная функция для совершения запросов на сервер.
 const createRequest = options => {

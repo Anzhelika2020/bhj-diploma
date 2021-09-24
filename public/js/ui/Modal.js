@@ -1,38 +1,43 @@
+"use strict";
 
 //Класс Modal отвечает за управление всплывающими окнами. В первую очередь это открытие или закрытие имеющихся окон
 
-document.querySelector(".create-account").onclick = () => App.modals.createAccount.open();
 
 document.querySelector(".create-income-button").onclick  = () => App.modals.newIncome.open();
 
 document.querySelector(".create-expense-button").onclick  = () => App.modals.newExpense.open();
 
 class Modal {
-  /**
-   * Устанавливает текущий элемент в свойство element
-   * Регистрирует обработчики событий с помощью Modal.registerEvents()
-   * Если переданный элемент не существует, необходимо выкинуть ошибку.
-   * */
+  /*
+  Устанавливает текущий элемент в свойство element
+  Регистрирует обработчики событий с помощью Modal.registerEvents()
+  Если переданный элемент не существует, необходимо выкинуть ошибку.
+  */
   constructor(element){
-    this.element = element;
-    this.registerEvents();
+    if (element) {
+      this.element = element;
+      this.registerEvents();
 
-  }
+    } else {
+      console.error("ошибка в Modal");
+      alert("ошибка в Modal");
+      throw new Error ("ошибка в Modal");
+    };
+  };
 
 //При нажатии на элемент с data-dismiss="modal" должен закрыть текущее окно (с помощью метода Modal.onClose)
   registerEvents() {
-    const closeModalBtns = this.element.querySelectorAll("[data-dismiss]");
+    const closeModalBtns = this.element.querySelectorAll("[data-dismiss]"); //находим все такие элементы
 
-    closeModalBtns.forEach((elm) => elm.onclick = () => App.modals[elm.closest(".modal").dataset.modalId].onClose());
+    closeModalBtns.forEach((elm) => elm.onclick = () => this.onClose()); // каждому устанавливаем обработчик
   };
 
 
 //Срабатывает после нажатия на элементы, закрывающие окно. Закрывает текущее окно (Modal.close())
-  onClose(e) {
-    //e.preventDefault();
-    this.close();
-    this.element.querySelector(".form").reset();
-    //return false;
+//при нажатии на кнопку закрытия: 
+  onClose(e) { // ! ЗАЧЕМ ТУТ (е) , не использую его?
+    this.close(); // вызывает метод закрытия окна
+    this.element.querySelector(".form").reset(); // очищает форму при закрытии
   }
 
 //Открывает окно: устанавливает CSS-свойство display со значением «block»

@@ -29,9 +29,6 @@ class Entity {
     options.url = this.URL;
 
     options.data = data;
-    //console.log(options.data.sum);
-    //console.log(typeof options.data.sum);
-    //console.log(options.data);
 
     options.method = 'PUT';
 

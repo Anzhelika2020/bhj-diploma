@@ -1,12 +1,27 @@
 "use strict";
 
+/*
 let callback = (err, response) => {
   if (err) {
     console.log(err);
+    console.error(err);
+    alert("Ошибка при получении ответа с сервера");
+    throw new Error("Ошибка при получении ответа с сервера");
+
   } else {
     console.log(response);
   };
-}
+};
+*/
+
+/*
+let data = [
+  {name: 'Банк', user_id: '1', id: '1', sum: -6800},
+  {name: 'Магазин', user_id: '1', id: '2', sum: -3750},
+  {name: 'Новый', user_id: '1', id: 'lw0z94ooktx7bhp9', sum: 0},
+  {name: 'еее', user_id: '1', id: 'lw0z95qgktx7dduh', sum: 0}
+]*/
+
 /*
 let data = {
   email: "demo@demo",
@@ -27,14 +42,6 @@ let user = {
   account_id: "1"
 };
 
-let data3 = {
-  email: "demodemo.ru",
-  id: "lw0z95nkktsobpvh",
-  name: "demo"
-}
-*/
-
-
 
 /*
 Класс Account наследуется от Entity. Управляет счетами пользователя. 
@@ -49,9 +56,31 @@ class Account extends Entity {
 
     options.method = 'GET';
 
+    options.data = {};
+
     options.callback = callback;
     
     createRequest(options);
   };
 
 };
+
+
+
+
+/*
+    Account.get(
+      element.dataset.dataId, //первый аргумент - id счета
+
+      (err, response) => { //второй аргумент - колбек, задаю его:
+        if(err) {
+          console.log(err); // если ошибка при запросе
+
+        } else if (response.success) { // если запрос успешный
+          console.log("успешно получена информация о счете, ответ:");
+          console.log(response);
+
+          
+
+
+        }*/
