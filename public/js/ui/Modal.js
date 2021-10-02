@@ -2,11 +2,6 @@
 
 //Класс Modal отвечает за управление всплывающими окнами. В первую очередь это открытие или закрытие имеющихся окон
 
-
-document.querySelector(".create-income-button").onclick  = () => App.modals.newIncome.open();
-
-document.querySelector(".create-expense-button").onclick  = () => App.modals.newExpense.open();
-
 class Modal {
   /*
   Устанавливает текущий элемент в свойство element
@@ -19,9 +14,7 @@ class Modal {
       this.registerEvents();
 
     } else {
-      console.error("ошибка в Modal");
-      alert("ошибка в Modal");
-      throw new Error ("ошибка в Modal");
+      throw new Error ("ошибка в Modal, element не существует");
     };
   };
 

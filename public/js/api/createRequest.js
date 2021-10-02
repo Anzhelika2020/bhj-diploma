@@ -47,20 +47,62 @@ function callback (err, response) {
     console.log(response);
   };
 };
-*/
+
 let options = {
   url: "", 
   data: {}, 
   method: "",
   callback: ""
 };
-
+*/
 //Основная функция для совершения запросов на сервер.
-const createRequest = options => {
-  const xhr = new XMLHttpRequest();
+const createRequest = (options) => {
+  const xhr = new XMLHttpRequest(); //содаем объект запроса
 
-  xhr.responseType = 'json';
+  xhr.responseType = 'json'; // задаем тип ответа
 
+  if (options.method === 'GET') { //если запрос GET - формируем URL запроса:
+    options.url = `${options.url}${getUrlRqstGET(options.data)}`; // к URL добавляем данные с помощю ф-ии getUrlRqstGET()
+  };
+
+  const formData = new FormData; // если запрос не GET, то создаем объект формы
+
+  for(let key in options.data) {// пробегаемся по всему объекту и добавляем данные в объект формы
+    formData.append(`${key}`, `${options.data[key]}`);
+  };
+
+  xhr.open(options.method, options.url);//инициализация зароса 
+
+  options.method === 'GET' ? xhr.send() : xhr.send(formData);// отправка запроса в зависимости от применяемого метода
+
+  xhr.onload = () => options.callback(null, xhr.response);// при успешной загрузке ответа вызов колбека с ответом
+
+  xhr.onerror = () => options.callback(xhr.response.error);// при ошибке запроса вызов колбека с ошибкой
+};
+
+/*
+
+//либо так?
+
+  try {
+  xhr.open(options.method, options.url);
+
+  options.method === 'GET' ? xhr.send() : xhr.send(formData);
+
+  xhr.onload = () => options.callback(null, xhr.response);
+
+  } catch(e) {
+    options.callback(e); // перехват сетевой ошибки
+  };
+
+ В блоке try/catch должен быть только “опасный код”. 
+ У вас это дейсвтия open и send. Следовательно их и нужно оборачивать в try/catch. 
+ Формирование строки запроса или формы не должны приводить к ошибкам. 
+ Следовательно их можно вынести из try/catch.
+
+ В блоке catch у вас ошибка уже произошла, а вы только подписываетесь на событие завершения ошибки…Вы либо сразу колбек вызывайте, либо на onerror подписывайтесь до перехвата ошибки.
+
+ //первоначальный вариант:
   try {
     if (options.method === 'GET') {
       options.url = `${options.url}${getUrlRqstGET(options.data)}`;
@@ -93,4 +135,5 @@ const createRequest = options => {
     // перехват сетевой ошибки
     xhr.onerror = () => options.callback(e);
   }
-};
+
+*/

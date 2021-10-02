@@ -51,36 +51,23 @@ class Account extends Entity {
   static URL = "/account";
 
 // Получает информацию о счёте
-  static get(id = '', callback){
-    options.url = `${this.URL}/${id}`;
+  static get(id = '', callback) {
+    let options = {
+      url: `${this.URL}/${id}`,
+      method: 'GET',
+      callback: callback
+    };
 
-    options.method = 'GET';
+    //options.url = `${this.URL}/${id}`;
 
-    options.data = {};
+    //options.method = 'GET';
 
-    options.callback = callback;
+    //options.data = {};
+
+    //options.callback = callback;
     
     createRequest(options);
   };
 
 };
 
-
-
-
-/*
-    Account.get(
-      element.dataset.dataId, //первый аргумент - id счета
-
-      (err, response) => { //второй аргумент - колбек, задаю его:
-        if(err) {
-          console.log(err); // если ошибка при запросе
-
-        } else if (response.success) { // если запрос успешный
-          console.log("успешно получена информация о счете, ответ:");
-          console.log(response);
-
-          
-
-
-        }*/

@@ -7,7 +7,8 @@
 class RegisterForm extends AsyncForm {
   /*
   Производит регистрацию с помощью User.register
-  После успешной регистрации устанавливает состояние App.setState('user-logged') и закрывает окно, в котором находится форма
+  После успешной регистрации устанавливает состояние App.setState('user-logged') и закрывает окно, в котором находится форма,
+  также сбрасывает форму в AsyncForm.registerEvents()
   */
   onSubmit(data) {
     User.register(data, (err, response) => { //вызываю метод регистрации и тут же задаю колбек который применится

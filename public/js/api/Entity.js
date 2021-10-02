@@ -9,13 +9,20 @@ class Entity {
 (в зависимости от того, что наследуется от Entity)
 */
   static list(data, callback) {
-    options.url = this.URL;
+    let options = {
+      url: this.URL,
+      data: data,
+      method: 'GET',
+      callback: callback
+    };
 
-    options.data = data;
+    //options.url = this.URL;
 
-    options.method = 'GET';
+    //options.data = data;
 
-    options.callback = callback;
+    //options.method = 'GET';
+
+    //options.callback = callback;
     
     createRequest(options);
   };
@@ -26,13 +33,20 @@ class Entity {
   (в зависимости от того, что наследуется от Entity)
   */
   static create(data, callback) {
-    options.url = this.URL;
+    let options = {
+      url: this.URL,
+      data: data,
+      method: 'PUT',
+      callback: callback
+    };
 
-    options.data = data;
+    //options.url = this.URL;
 
-    options.method = 'PUT';
+    //options.data = data;
 
-    options.callback = callback;
+    //options.method = 'PUT';
+
+    //options.callback = callback;
     
     createRequest(options);
   };
@@ -42,13 +56,20 @@ class Entity {
   в зависимости от того, что наследуется от Entity)
   */
   static remove(data, callback ) {
-    options.url = this.URL;
+    let options = {
+      url: this.URL,
+      data: data,
+      method: 'DELETE',
+      callback: callback
+    };
 
-    options.data = data;
+    //options.url = this.URL;
 
-    options.method = 'DELETE';
+    //options.data = data;
 
-    options.callback = callback;
+    //options.method = 'DELETE';
+
+    //options.callback = callback;
     
     createRequest(options);
   };

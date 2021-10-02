@@ -12,13 +12,11 @@ class AccountsWidget {
   constructor(element) {
     if (element) {
       this.element = element;
-      this.update();
       this.registerEvents();
+      this.update();
 
     } else {
-      console.error("ошибка в AccountsWidget");
-      alert("ошибка в AccountsWidget");
-      throw new Error ("ошибка в AccountsWidget");
+      throw new Error ("ошибка в AccountsWidget, element не существует");
     };
   };
 
@@ -28,18 +26,18 @@ class AccountsWidget {
   вызывает AccountsWidget.onSelectAccount()
   */
   registerEvents() {
-    //при нажатии на кнопку создать счет - открываем окно создания счета
-    document.querySelector(".create-account").onclick = () => App.modals.createAccount.open();
+    //задаем обработчик на всю панель счетов, так как счетов изначально нет в HTML, а при их добавлении переписывается HTML и снимаются обработчики
+    this.element.onclick = (event) => {
+      if (event.target.closest(".create-account")) {//при нажатии на кнопку создать счет - открываем окно создания счета
+        App.modals.createAccount.open();
 
-    //задаем обработчик на всю панель счетов, так как счетов изначально нет в HTML а задаем мы их сразу:
-    this.element.onclick = function (event) {
-      if (!event.target.closest(".header")) { //Если нажали не на заголовок к списку счетов, то срабатывает обработчик:
-        let account = event.target.closest(".account"); //находим элемент инициатор события (на который нажал пользователь) и получаем его родителя (нужный нам счет)
+      } else if (event.target.closest(".account")) {//Если нажали на элемент, ближайший родитель которого имеет класс .account, то это счет, значит:
+        //let account = event.target.closest(".account"); //находим элемент инициатор события (на который нажал пользователь) и получаем его родителя (нужный нам счет)
 
-        App.widgets.accounts.onSelectAccount(account); //вызываем метод меняющий класс выбранному счету и вызывающий страницу с транзакциями
+        this.onSelectAccount(event.target.closest(".account")); //вызываем метод меняющий класс выбранному счету и вызывающий страницу с транзакциями
 
         //return false;//при нажатии на ссылки (а) и так ссылка никуда не перебрасывает
-      } ;
+      };
     };
   };
 
@@ -56,33 +54,15 @@ class AccountsWidget {
 
         (err, response) => { //второй аргумент - колбек, задаю его:
           if(err) {
-            console.log(err); // если ошибка при запросе
+            console.error(err); // если ошибка при запросе
 
-          } else if (response.success) { // если запрос успешный
+          } else if (response.success) {//если пришел пустой массив, то тоже выполняю действие (перерисовываю список счетов), а то вдруг другой пользователь зашел и у него нет счетов - при входе надо перерисовать страницу на пустой список счетов.
             console.log("успешный запрос списка счетов, ответ:");
             console.log(response);
 
             this.clear(); //очищаю список ранее отображённых счетов
 
             this.renderItem(response.data); //запускаю метод renderItem() для отрисовки счетов из полученных данных
-
-/* 
-Хотела добавлять проверку не пустой ли пришел массив в ответе, например, если счетов вообще нет никаких, но при первом запросе сразу выдает ошибку: 
-Uncaught TypeError: Cannot read properties of undefined (reading 'length'). 
-
-При повторной отправке все хорошо работает. Почему??
-
-
-            console.log(response.data.length)
-
-            if (response.data.length !== 0) {//если полученный массив не пустой - есть счета и длина массива не 0:
-              //console.log("есть счета");
-              this.renderItem(response.data);//запускаю метод renderItem() для отрисовки счетов из полученных данных
-
-            } else {
-              //console.log("нет счетов");//если полученный массив пустой - счетов нет:
-            };
-*/
           };
       });
     };
@@ -107,37 +87,49 @@ Uncaught TypeError: Cannot read properties of undefined (reading 'length').
   */
   onSelectAccount(element) { //получаем счет на который нажал пользователь
     //ищем через его родителя был ли ранее активным какой-либо счет и если да, то удаляем у него класс .active
-    if (element.closest(".accounts-panel").querySelector(".active")) {
+
+    console.log("выбрали счет")
+    console.log(element)
+
+    if(element.className.includes("active")) {
+      console.log("нажали на и так активный класс, поэтому его удалим");
+
+      element.classList.remove("active");
+
+      App.pages.transactions.clear();
+
+      return;
+
+    } else if (element.closest(".accounts-panel").querySelector(".active")) {
       element.closest(".accounts-panel").querySelector(".active").classList.remove("active");
     };
+
+    console.log("убрали активный класс прежнему элементу");
 
     element.classList.add("active");//переданному элементу устанавливаем класс .active
 
     console.log("поменяли активный класс у счета");
-    console.log({account_id: `${element.dataset.dataId}`});
+    console.log(element);
+    console.log({account_id: `${element.dataset.id}`});
 
-    App.showPage('transactions', {account_id: `${element.dataset.dataId}`}); //вызывает страницу с транзакциями по этому счету
+    App.pages.transactions.lastOptions = {account_id: `${element.dataset.id}`};// записали номер счета в свойство lastOptions у страницы отображения транзакций по этому счету
+
+    App.showPage('transactions', App.pages.transactions.lastOptions); //вызывает страницу с транзакциями по этому счету
     
     console.log("сработало после вызова страницы транзакций по этому счету");
   };
 
   
-  //Возвращает HTML-код счёта для последующего отображения в боковой колонке. item - объект с данными о счёте
+  //Возвращает созданный HTML-код счёта (в виде строки) для последующей вставки и отображения в боковой колонке. (item - объект с данными о счёте)
   getAccountHTML(item) {
-    let accountItemElm = document.createElement("li"); //создаю пустой элемент списка счетов
-
-    accountItemElm.className = "account"; //добавляю ему класс
-
-    accountItemElm.dataset.dataId = `${item.id}`; //добавляю ему атрибут dataset
-    //добавляю ему нужный контент:
-    accountItemElm.innerHTML += `
+    return `
+    <li class="account" data-id=\"${item.id}\">
       <a href=\"#\">
           <span>${item.name}</span> /
           <span>${item.sum}</span>
       </a>
+    </li>
     `;
-
-    return accountItemElm; //метод возвращает HTML-код счёта
   };
 
   /*
@@ -145,16 +137,21 @@ Uncaught TypeError: Cannot read properties of undefined (reading 'length').
   Отображает полученный с помощью метода AccountsWidget.getAccountHTML HTML-код элемента и добавляет его внутрь элемента виджета
   */
   renderItem(data){
-    //console.log(data)
-
     data.forEach((elm) => {//для каждого элемента массива(счета) 
-      let accountItemHtml = this.getAccountHTML(elm);//запускаю метод создания HTML разметки .getAccountHTML
+      //нахожу панель для отображения существующих счетов и добавляю пустой элемент в разметку к уже существующей
+      document.querySelector(".accounts-panel").innerHTML += this.getAccountHTML(elm);
 
-      //console.log(accountItemHtml);//это созданная HTML разметка
+      /* 
+      длинный путь через создание нового элемента, его вставки в панель счетов и установления ему нового значения (замены его содержимого включая замену его самого):
 
-      let accountsPanel = document.querySelector(".accounts-panel");//нахожу панель для отображения существующих счетов
+      let htmlAccountItem = this.getAccountHTML(elm);//получаю созданную HTML разметку (строку) через метод .getAccountHTML
+      
+      let elmAccountItem = document.createElement("li"); //создаю пустой элемент списка счетов
 
-      accountsPanel.appendChild(accountItemHtml);//добавляю существующие счета в разметку для отображения
+      document.querySelector(".accounts-panel").appendChild(elmAccountItem);//нахожу панель для отображения существующих счетов и добавляю пустой элемент в разметку
+
+      elmAccountItem.outerHTML = htmlAccountItem; // устанавливаю HTML разметку этому элементу (изменяя его самого включительно)
+      */
     });
   };
 };

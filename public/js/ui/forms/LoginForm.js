@@ -6,7 +6,7 @@
 class LoginForm extends AsyncForm {
   /*
   Производит авторизацию с помощью User.login. 
-  После успешной авторизации, сбрасывает форму, устанавливает состояние App.setState( 'user-logged' ) 
+  После успешной авторизации, сбрасывает форму в AsyncForm.registerEvents(), устанавливает состояние App.setState( 'user-logged' ) 
   и закрывает окно, в котором находится форма
   */
   onSubmit(data) {
@@ -14,9 +14,7 @@ class LoginForm extends AsyncForm {
       if (err) {
         console.error(err);
 
-        alert("Ошибка при получении ответа с сервера при входе");
-
-        throw new Error("Ошибка при получении ответа с сервера при входе");
+        //throw new Error("Ошибка при получении ответа с сервера при входе");
     
       } else if (response.success) {
         console.log(response);

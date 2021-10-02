@@ -12,9 +12,7 @@ class UserWidget {
       this.element = element;
 
     } else {
-      console.error("ошибка в UserWidget");
-      alert("ошибка в UserWidget");
-      throw new Error ("ошибка в UserWidget");
+      throw new Error ("ошибка в UserWidget, element не существует");
     };
   };
 
@@ -23,9 +21,14 @@ class UserWidget {
  Если пользователь авторизован, в элемент .user-name устанавливает имя авторизованного пользователя
 */
   update() {
-    let userCurrent = User.current();
-    if (userCurrent) {
+    if (User.current()) {
+      document.querySelector(".user-panel").querySelector(".user-name").textContent =  User.current().name;
+
+      /*
       App.widgets.user.element.querySelector(".user-name").textContent =  User.current().name;
+
+      App.widgets.user.element - это - document.querySelector(".user-panel") - задано при создании виджета панели юзера
+      */
     };
   };
 };

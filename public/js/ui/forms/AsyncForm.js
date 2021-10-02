@@ -15,8 +15,6 @@ class AsyncForm {
       this.registerEvents();
 
     } else {
-      console.error("Ошибка форма не существует");
-      alert("Ошибка форма не существует");
       throw new Error ("Ошибка, форма не существует");
     };
   };
@@ -27,7 +25,7 @@ class AsyncForm {
     this.element.onsubmit = e => {
       e.preventDefault();
       this.submit();
-      this.element.reset();
+      this.element.reset();// сразу сбрасывает (очищает) форму !!! Это если нам нужно чтобы все формы сразу очищались после отправки данных, иначе - каждой форме отдельно в методе onSubmit(options) задавать или не задавать очистку формы.
     };
   };
 

@@ -36,17 +36,11 @@ class Sidebar {
     document.querySelector(".menu-item_login").onclick = () => App.getModal("login").open();
 
     document.querySelector(".menu-item_register").onclick = () => App.getModal("register").open();
-
-  /*
-  Я ДУМАЛА ИЗНАЧАЛЬНО ЧТО они по принципу их id в dataset задавались.
-
-    let modalLoginName = document.getElementById("modal-login").dataset.modalId;
-    document.querySelector(".menu-item_login").onclick = () => App.getModal(modalLoginName).open();
-
-  Если нет связи, то зачем вызывать через метод  App.getModal? можно же проще сразу по имени св-ва:
-
-    document.querySelector(".menu-item_register").onclick = () => App.modals.register.open();
-  */
+    /*
+    Если нет связи, то зачем вызывать через метод App.getModal: App.modals.register.open();???
+    Можно и так. Разница в том, что через свойство вы внедряетесь в свойства класса App. 
+    Сейчас проблем никаких не будет, но эти объекты могут быть скрыты, а для их получения будет использоваться метод App.getModal. В этом методе могла быть дополнительная логика по формированию или обработке возвращаемой модалке…В текущей ситуации, так как никакой дополнительной логики нет, то можно использовать обращение через свойство. 
+    */
     document.querySelector(".menu-item_logout").onclick = () => { //при нажатии на кнопку выхода:
       User.logout((err, response) => { //вызываю метод User.logout(callback), колбек задаю здесь же:
         if(err) {
@@ -55,10 +49,9 @@ class Sidebar {
         } else if (response.success) { // если запрос успешный
           console.log("выход успешно произведен");
 
-          App.setState('init');
+          App.setState('init');// отрисовывает страницу: нет авторизованного - нужно войти
         };
       });
-    //App.setState('init') не проще было сразу в User.js в User.logout() установить?
     };
   };
 };
