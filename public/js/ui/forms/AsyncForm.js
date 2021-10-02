@@ -5,10 +5,10 @@
 Вместо этого данные с таких форм собираются и передаются в метод onSubmit для последующей обработки
 */
 class AsyncForm {
-  /**
-   * Если переданный элемент не существует, необходимо выкинуть ошибку.
-   * Сохраняет переданный элемент и регистрирует события через registerEvents()
-   * */
+  /*
+  Если переданный элемент не существует, необходимо выкинуть ошибку.
+  Сохраняет переданный элемент и регистрирует события через registerEvents()
+  */
   constructor(element) {
     if (element) {
       this.element = element;
@@ -20,7 +20,6 @@ class AsyncForm {
   };
 
 //Необходимо запретить отправку формы и в момент отправки вызывает метод submit()
-
   registerEvents() {
     this.element.onsubmit = e => {
       e.preventDefault();
@@ -52,7 +51,7 @@ class AsyncForm {
 
 //Пустой метод. Пригодится для дальнейших форм, что будут унаследованы от AsyncForm. 
   onSubmit(options) {
-    console.log(options);
+    //console.log(options);
   };
 
 

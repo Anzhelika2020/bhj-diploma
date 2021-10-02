@@ -28,13 +28,11 @@ class AccountsWidget {
   registerEvents() {
     //задаем обработчик на всю панель счетов, так как счетов изначально нет в HTML, а при их добавлении переписывается HTML и снимаются обработчики
     this.element.onclick = (event) => {
-      if (event.target.closest(".create-account")) {//при нажатии на кнопку создать счет - открываем окно создания счета
+      if (event.target.closest(".create-account")) {//если нажали на элемент, ближайший родитель которого имеет класс create-account(если элемент на который нажали находится в рамках элемента с классом create-account), то это кнопка создать счет  - открываем окно создания счета
         App.modals.createAccount.open();
 
-      } else if (event.target.closest(".account")) {//Если нажали на элемент, ближайший родитель которого имеет класс .account, то это счет, значит:
-        //let account = event.target.closest(".account"); //находим элемент инициатор события (на который нажал пользователь) и получаем его родителя (нужный нам счет)
-
-        this.onSelectAccount(event.target.closest(".account")); //вызываем метод меняющий класс выбранному счету и вызывающий страницу с транзакциями
+      } else if (event.target.closest(".account")) {//Если нажали на элемент, ближайший родитель которого имеет класс .account, то значит это элемент счета:
+        this.onSelectAccount(event.target.closest(".account")); //вызываем метод меняющий класс выбранному счету и вызывающий страницу с транзакциями. Выбранный счет = event.target.closest(".account") это ближайший родитель с классом account элемента инициатора события(на который нажал пользователь).
 
         //return false;//при нажатии на ссылки (а) и так ссылка никуда не перебрасывает
       };
@@ -86,33 +84,32 @@ class AccountsWidget {
   Вызывает App.showPage( 'transactions', { account_id: id_счёта });
   */
   onSelectAccount(element) { //получаем счет на который нажал пользователь
-    //ищем через его родителя был ли ранее активным какой-либо счет и если да, то удаляем у него класс .active
 
     console.log("выбрали счет")
     console.log(element)
 
-    if(element.className.includes("active")) {
+    if(element.className.includes("active")) {//если нажали на счет у которого и так класс active
       console.log("нажали на и так активный класс, поэтому его удалим");
 
-      element.classList.remove("active");
+      element.classList.remove("active"); // удаляем ему активный класс - закрываем его
 
-      App.pages.transactions.clear();
+      App.pages.transactions.clear();// раз пользователь сам закрыл единственный активный счет, то очищаем страницу с отображением транзакций по счету
 
-      return;
+      return;// больше действий не нужно, пока опять не нажали на какой-то счет, выходим из метода
 
-    } else if (element.closest(".accounts-panel").querySelector(".active")) {
-      element.closest(".accounts-panel").querySelector(".active").classList.remove("active");
+    } else if (element.closest(".accounts-panel").querySelector(".active")) {// если нажали не на активный счет, а любой другой, то
+      element.closest(".accounts-panel").querySelector(".active").classList.remove("active");//ищем у кого ранее был активный класс и убираем ему класс active
     };
 
     console.log("убрали активный класс прежнему элементу");
 
-    element.classList.add("active");//переданному элементу устанавливаем класс .active
+    element.classList.add("active");//переданному элементу (на который нажали) устанавливаем класс .active
 
     console.log("поменяли активный класс у счета");
     console.log(element);
     console.log({account_id: `${element.dataset.id}`});
 
-    App.pages.transactions.lastOptions = {account_id: `${element.dataset.id}`};// записали номер счета в свойство lastOptions у страницы отображения транзакций по этому счету
+    App.pages.transactions.lastOptions = {account_id: `${element.dataset.id}`};// записали номер счета в свойство lastOptions у страницы отображения транзакций по этому счету (чтобы запомнить номер последнего выбранного счета)
 
     App.showPage('transactions', App.pages.transactions.lastOptions); //вызывает страницу с транзакциями по этому счету
     

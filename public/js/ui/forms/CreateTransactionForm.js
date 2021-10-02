@@ -7,10 +7,10 @@ class CreateTransactionForm extends AsyncForm {
   constructor(element) {
     super(element)
 
-    this.renderAccountsList();
-  }
+    this.renderAccountsList();//вызывается дважды, так как у нас два окна создания транзакций: приход и расход
+  };
   
-  //Получает список счетов с помощью Account.list/ Обновляет в форме всплывающего окна выпадающий список
+  //Получает список счетов с помощью Account.list и Обновляет в форме всплывающего окна выпадающий список
   renderAccountsList() {
     Account.list(//вызываю ф-ию запроса списка счетов и в ней же (в колбеке) эти данные обрабатываю:
       User.current(), //первый аргумент - data -данные текущего пользователя
@@ -35,15 +35,13 @@ class CreateTransactionForm extends AsyncForm {
 
   /*
   Создаёт новую транзакцию (доход или расход) с помощью Transaction.create. 
-  По успешному результату вызывает App.update(),  сбрасывает форму в AsyncForm.registerEvents() и закрывает окно, в котором находится форма
+  По успешному результату вызывает App.update(), сбрасывает форму в AsyncForm.registerEvents() и закрывает окно, в котором находится форма
   */
-  onSubmit(data) {
-    console.log("вот это сейчас проверяю")
-
+  onSubmit(data) {// при отправке формы создания транзакции (или расхода или дохода, смотря какую форму отправили)
     console.log(data)
 
-    Transaction.create(
-      data, 
+    Transaction.create(//вызываю ф-ию создания транзакции и в ней же (в колбеке) эти данные обрабатываю:
+      data, //первый аргумент - data -данные из формы
       
       (err, response) => {//второй аргумент = колбек который выполнится после запроса
         if(err) {// если ошибка при запросе
@@ -61,6 +59,7 @@ class CreateTransactionForm extends AsyncForm {
           /* ! закрываю не через метод onClose() так как он есть только у объекта: App.modals.newIncome.onClose(), 
           а я нахожу не объект а элемент этого окна в DOM (как родительский у того элемента на котором действие) и меняю заданный style.display
           */
+         
          //this.element.reset(); // форма и так очищается после закрытия в AsyncForm.registerEvents()
         };
       });

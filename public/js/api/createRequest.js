@@ -1,30 +1,8 @@
 "use strict";
-/*  
-const options = {
-  url: "/user/login", 
-  data: {
-    email: "demo@demo",
-    password: "demo",
-    name: "demo",
-    id: "1",
-    account_id: "1",
-    sum: 5000,
-    type: "expense",
-    user_id: "1"
-  }, 
-  method: 'GET',
-  callback: (err, response) => {
-    if (err) {
-    console.error(err);
-    alert("Ошибка при получении ответа с сервера");
-    throw new Error("Ошибка при получении ответа с сервера");
-
-  } else {
-    console.log(response);
-  };
-};
+/*
+функция для формировани URL для GET запроса через XMLHttpRequest(). 
+Получает данные из объекта с элементами в виде ключ: значение
 */
-
 function getUrlRqstGET(data) {
   let url = "";
   for(let key in data) {
@@ -35,27 +13,18 @@ function getUrlRqstGET(data) {
   url[0] = "?"; 
   return url.join("");
 };
+
 /*
-function callback (err, response) {
-  if (err) {
-    console.log(err);
-    console.error(err);
-    alert("Ошибка при получении ответа с сервера");
-    throw new Error("Ошибка при получении ответа с сервера");
-
-  } else {
-    console.log(response);
-  };
-};
-
-let options = {
-  url: "", 
-  data: {}, 
-  method: "",
-  callback: ""
-};
+Основная функция коорую будем использовать для совершения запросов на сервер.
+options будет формироваться в зависимости от того что нужно запросить и передаваться при вызове функции.
+options - это будет объект с данными в виде ключ: значение. 
+Что-то в ключе (напр. URL) будет именно простое значение, 
+что-то объектом с ключем data(данные пользователя/счета/транзакции let data = {...}), 
+что-то функцией с ключом callback.
+Этот колбек будет вызываться внутри нашей функции createRequest после полученния ответа с сервера. 
+Если успешный ответ, то делаем с этими данными то, что нам нужно и что прописано в колбеке, если нет - выводим ошибку. 
+Эти действия прописываем в колбеке каждый раз как собираемся вызвать createRequest и добавляем этот колбек в формируемый options. соответстенно потом вызываем createRequest, передаем в него options
 */
-//Основная функция для совершения запросов на сервер.
 const createRequest = (options) => {
   const xhr = new XMLHttpRequest(); //содаем объект запроса
 
@@ -101,39 +70,5 @@ const createRequest = (options) => {
  Следовательно их можно вынести из try/catch.
 
  В блоке catch у вас ошибка уже произошла, а вы только подписываетесь на событие завершения ошибки…Вы либо сразу колбек вызывайте, либо на onerror подписывайтесь до перехвата ошибки.
-
- //первоначальный вариант:
-  try {
-    if (options.method === 'GET') {
-      options.url = `${options.url}${getUrlRqstGET(options.data)}`;
-      //console.log(options.url);
-
-      //options.url = `${options.url}?email=${options.data.email}&password=${options.data.password}&account_id=${options.data.account_id}`;
-  
-      xhr.open(options.method, options.url);
-      xhr.send();
-  
-    } else {
-      const formData = new FormData;
-      
-      formData.append('email', options.data.email);
-      formData.append('password', options.data.password);
-      formData.append('name', options.data.name);
-      formData.append('id', options.data.id);
-      formData.append('account_id', options.data.account_id);
-      formData.append('type', options.data. type);
-      formData.append('sum', options.data.sum);
-      formData.append('user_id', options.data.user_id);
-  
-      xhr.open(options.method, options.url);
-      xhr.send(formData);
-    }
-
-    xhr.onload = () => options.callback(null, xhr.response);
-
-  } catch (e) {
-    // перехват сетевой ошибки
-    xhr.onerror = () => options.callback(e);
-  }
 
 */

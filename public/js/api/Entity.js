@@ -5,26 +5,24 @@ class Entity {
   static URL = "";
 
 /*
+Методы этого класса формируют для себя нужный ему объект options с нужными параметрами именно для этого запроса из полученных данных.
+Колбек-функция(что будем делать при получении данных) будет тоже всегда разная, будет создаваться и передаваться при вызове этого метода. 
+Как написано в нашей функции, колбек использует полученный ответ от запроса, который доступен только в той области видимости, поэтому действия задаем и передаем каждый раз при отправке запроса и делаем действия именно в той области видимости и только при вызове запроса и после получения ответа с сервера.
+
+Мы эти действия задали, отправили, а выполнятся они только при нажатии на нужные кнопки пользователем и только после получения ответа после запроса на сервер.
+*/
+/*
 Запрашивает с сервера список данных. Это могут быть счета или доходы/расходы 
 (в зависимости от того, что наследуется от Entity)
 */
   static list(data, callback) {
-    let options = {
+    let options = { // задали объект options с нужными данными
       url: this.URL,
       data: data,
       method: 'GET',
-      callback: callback
+      callback: callback//вписали сюда нужные действия после запроса
     };
-
-    //options.url = this.URL;
-
-    //options.data = data;
-
-    //options.method = 'GET';
-
-    //options.callback = callback;
-    
-    createRequest(options);
+    createRequest(options);// вызвали запрос на сервер с нужными данными и заданными в нем действиями при получении ответа
   };
   
 
@@ -39,14 +37,6 @@ class Entity {
       method: 'PUT',
       callback: callback
     };
-
-    //options.url = this.URL;
-
-    //options.data = data;
-
-    //options.method = 'PUT';
-
-    //options.callback = callback;
     
     createRequest(options);
   };
@@ -62,14 +52,6 @@ class Entity {
       method: 'DELETE',
       callback: callback
     };
-
-    //options.url = this.URL;
-
-    //options.data = data;
-
-    //options.method = 'DELETE';
-
-    //options.callback = callback;
     
     createRequest(options);
   };

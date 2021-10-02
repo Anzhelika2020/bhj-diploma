@@ -21,10 +21,10 @@ class CreateAccountForm extends AsyncForm {
 
           App.modals.createAccount.onClose(); //закрываю и очищаю модальное окно
 
-        } else if (!response.success) {
+        } else if (!response.success) {//если ответ пришел, но он отрицательный - выдает ошибку при запросе данных, не дает нужных данных
           console.error(response);
           
-          alert(`${response.error}`);
+          alert(`${response.error}`);// показывает что не так при создании нового счета
         };
       });
   };

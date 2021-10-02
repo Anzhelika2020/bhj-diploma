@@ -21,7 +21,8 @@ class User {
   //Возвращает текущего авторизованного пользователя из локального хранилища
   static current() {
     return JSON.parse(localStorage.getItem('user'));
-    /*
+
+    /* неудачный и длинный способ:
     if(localStorage.user) {
       return JSON.parse(localStorage.user);
 
@@ -53,24 +54,8 @@ class User {
         };
   
         callback(err, response);  // вызвать переданный при вызове метода  fetch() коллбек 
-      } // нет (;) так как перечисление свойств идет
+      } // нет (;) так как перечисление свойств идет, можно и просто (,) сделать
     });
-    /*
-    options.url = `${this.URL}/current`;
-
-    options.method = 'GET';
-
-    options.callback = (err, response) => {
-      if (response.success && response.user !== undefined) {
-        User.setCurrent(response.user);
-      } else {
-        User.unsetCurrent()
-      };
-
-      callback(err, response);
-    };*/
-
-    //createRequest(options); // вызываем ф-ию - делаем запрос на сервер с заданными параметрами
   };
 
   /*
@@ -83,13 +68,13 @@ class User {
       method: 'POST',
       responseType: 'json',
       data,
-      callback: (err, response) => {
-        if (response && response.user) {
-          User.setCurrent(response.user);
-          //App.setState('user-logged');
-        }
-        callback(err, response);
-      }
+      callback: (err, response) => { 
+        if (response && response.user) {//если такой пользователь есть, 
+          User.setCurrent(response.user);//то устанавливаем текущего пользователя в localStorage
+          //App.setState('user-logged'); // можно и так сделать, тут задать, а не при нажатии на кнопку отправки формы фхода в LoginForm
+        };
+        callback(err, response);// и дальше вызываем колбек заданный при вызове, делаем дальше с данными что нам нужно
+      }// не нужно знака
     });
   };
 
@@ -107,31 +92,12 @@ class User {
         if (response.success) {
           console.log(response.user);
           User.setCurrent(response.user);
-          //App.setState('user-logged');
+          //App.setState('user-logged');// можно и так сделать, тут задать, а не при нажатии на кнопку отправки формы регистрации в RegisterForm
         };
   
-        callback(err, response);
-      } //! =//=
+        callback(err, response);//вызываем колбек заданный при вызове
+      }
     });
-  
-    /*
-    options.url = `${this.URL}/register`;
-
-    options.method = 'POST';
-
-    options.data = data;
-
-    options.callback = (err, response) => {
-      if (response.success) {
-        console.log(response.user);
-        User.setCurrent(response.user);
-        //App.setState('user-logged');
-      };
-
-      callback(err, response);
-    };
-
-    createRequest(options);*/
   };
 
   /*
@@ -152,20 +118,4 @@ class User {
       }
     }); 
   };
-  /*
-    options.url = `${this.URL}/logout`;
-
-    options.method = 'POST';
-
-    options.callback = (err, response) => {
-      if (response.success) {
-        User.unsetCurrent();
-        //App.setState('init'); //почему здеь его не установить?, а в Sidevar.js в initAuthLinks() прописывать?
-      };
-
-      callback(err, response);
-    };
-
-    createRequest(options);
-  };*/
 };
