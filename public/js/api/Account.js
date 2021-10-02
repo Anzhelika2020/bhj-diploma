@@ -22,16 +22,3 @@ class Account extends Entity {
   };
 
 };
-
-/*
-/account:
-
-Метод PUT - name - вернет success = true
-
-Метод DELETE - id - вернет success = true
-
-Метод GET - вернет данные по всем счетам и success = true
-
-Метод GET - id - вернет данные по конкретному счету
-*/
-

@@ -23,12 +23,6 @@ class UserWidget {
   update() {
     if (User.current()) {
       document.querySelector(".user-panel .user-name").textContent =  User.current().name;
-
-      /* или так:
-      App.widgets.user.element.querySelector(".user-name").textContent =  User.current().name;
-
-      App.widgets.user.element - это - document.querySelector(".user-panel") - задано при создании виджета панели юзера
-      */
     };
   };
 };

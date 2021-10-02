@@ -51,7 +51,7 @@ class AsyncForm {
 
 //Пустой метод. Пригодится для дальнейших форм, что будут унаследованы от AsyncForm. 
   onSubmit(options) {
-    //console.log(options);
+    
   };
 
 

@@ -5,26 +5,23 @@
 
 class CreateAccountForm extends AsyncForm {
 //Создаёт счёт с помощью Account.create, закрывает окно в случае успеха, а также вызывает App.update() и сбрасывает форму в AsyncForm.registerEvents()
-  onSubmit(data) {//сабмит с данными(вызванный в унаследованном AsyncForm) вызывает ф-ию создания счета(метод класса Account)
+  onSubmit(data) {
     Account.create(
-      data, //первый аргумент - data - введенные в форму данные
+      data,
 
-      (err, response) => {//второй аргумент - колбек, задаю его:
+      (err, response) => {
         if(err) {
-          console.log(err);// если ошибка при запросе
+          console.log(err);
 
-        } else if (response.success) {// если запрос успешный
-          console.log("успешный запрос создания счета, ответ:");
-          console.log(response);
+        } else if (response.success) {
+          App.update();
 
-          App.update();//обновляю панель счетов (Обновляет виджеты и содержимое страниц)
+          App.modals.createAccount.onClose();
 
-          App.modals.createAccount.onClose(); //закрываю и очищаю модальное окно
-
-        } else if (!response.success) {//если ответ пришел, но он отрицательный - выдает ошибку при запросе данных, не дает нужных данных
+        } else if (!response.success) {
           console.error(response);
           
-          alert(`${response.error}`);// показывает что не так при создании нового счета
+          alert(`${response.error}`);
         };
       });
   };

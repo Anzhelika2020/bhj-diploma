@@ -20,18 +20,18 @@ class Modal {
 
 //При нажатии на элемент с data-dismiss="modal" должен закрыть текущее окно (с помощью метода Modal.onClose)
   registerEvents() {
-    const closeModalBtns = this.element.querySelectorAll("[data-dismiss]"); //находим все такие элементы
+    const closeModalBtns = this.element.querySelectorAll("[data-dismiss]");
 
-    closeModalBtns.forEach((elm) => elm.onclick = () => this.onClose()); // каждому устанавливаем обработчик
+    closeModalBtns.forEach((elm) => elm.onclick = () => this.onClose());
   };
 
 
 //Срабатывает после нажатия на элементы, закрывающие окно. Закрывает текущее окно (Modal.close())
 //при нажатии на кнопку закрытия: 
   onClose() {
-    this.close(); // вызывает метод закрытия окна
-    this.element.querySelector(".form").reset(); // очищает форму при закрытии
-  }
+    this.close();
+    this.element.querySelector(".form").reset();
+  };
 
 //Открывает окно: устанавливает CSS-свойство display со значением «block»
   open() {

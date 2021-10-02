@@ -11,8 +11,8 @@ class TransactionsPage {
   constructor( element ) {
     if (element) {
       this.element = element;
-      this.lastOptions;//сюда записывать будем объект options {} с данными о номере счета account_id: 
-      this.registerEvents();// вызываем метод
+      this.lastOptions;
+      this.registerEvents();
 
     } else {
       throw new Error ("Ошибка, страница транзакций content-wrapper не существует");
@@ -38,30 +38,22 @@ class TransactionsPage {
   Внутри обработчика пользуйтесь методами TransactionsPage.removeTransaction и TransactionsPage.removeAccount соответственно
    */
   registerEvents() {
-    // ищу кнопку удаления счета и задаю ей обработчик:
     this.element.querySelector(".remove-account").onclick = () => this.removeAccount();
 
-    let id;//будем искать id транзакции для вызова метода удаления этой транзакции, создаем его
+    let id;
+    this.element.querySelector(".content").onclick = (event) => {
+      if (event.target.closest(".transaction__remove")) {
+        id = event.target.closest(".transaction__remove").dataset.id;
 
-    //задаю обработчик на всю панель с транзакциями, так как ее содержимое все время перерисовывается и обработчики слетают
-    this.element.querySelector(".content").onclick = (event) => {//при нажатии на страницу с транзакциями:
+      } else if (event.target.className.includes("transaction__remove")) {
+        id = event.target.dataset.id;
 
-      console.log(event.target.closest(".transaction__remove"))
-      console.log("нажали на удаление транзакции:");
-      console.log(event.target);
-
-      if (event.target.closest(".transaction__remove")) {// если ближайший родитель элемента на который нажали это кнопка удаления
-        id = event.target.closest(".transaction__remove").dataset.id;// то id для этой транзакции равен dataset.id родителя этого элемента(dataset.id этой кнопки)
-
-      } else if (event.target.className.includes("transaction__remove")) {// если этот элемент на который нажали и есть кнопка удаления
-        id = event.target.dataset.id;// то id для этой транзакции равен dataset.id этой кнопки
-
-      } else {//если в любые другие места нажали, то не нужно ничего удалять и id не будет нужен
+      } else {
         id = null
       };
 
-      if (id !== null) {// если нажимали не на кнопку удаления и id поэтому равен null, то:
-        this.removeTransaction(id);//удаляем ту транзакцию, на кнопку удаления которой нажали
+      if (id !== null) {
+        this.removeTransaction(id);
       };
     };
   };
@@ -72,24 +64,19 @@ class TransactionsPage {
   Если пользователь согласен удалить счёт, вызовите Account.remove, а также TransactionsPage.clear с пустыми данными для того, чтобы очистить страницу.
   По успешному удалению необходимо вызвать метод App.updateWidgets(), либо обновляйте только виджет со счетами для обновления приложения
   */
-  removeAccount() { // удаление счета
-    //если есть какой-то выбранный счет (объект в lastOptions) и пользователь подтвердил отмену:
+  removeAccount() {
     if (this.lastOptions && confirm("Вы действительно хотите удалить счёт?")) {
-      Account.remove(// запускаем метод удаления счета
-        {id: this.lastOptions.account_id}, //первый аргумент, создаем обьект с данными и сразу записываем туда данные id хранящиеся в св-ве lastOptions
+      Account.remove(
+        {id: this.lastOptions.account_id},
 
-        (err, response) => {//второй аргумент - колбек, задаю его:
+        (err, response) => {
           if(err) {
-            console.log(err);// если ошибка при запросе
+            console.log(err);
   
-          } else if (response.success) {// если запрос успешный
-            console.log("успешный запрос удаления счета, ответ:");
-            console.log(response);
+          } else if (response.success) {
+            this.clear();
 
-            this.clear(); // очищаем страницу после успешного удаления
-
-            App.getWidget("accounts").update();//обновляем виджет со счетами для обновления приложения
-            //App.updateWidgets()//можно все виджеты обновить (и accounts и user)
+            App.getWidget("accounts").update();
 
           } else if (!response.success) {
             console.error(response);
@@ -106,18 +93,15 @@ class TransactionsPage {
  */
   removeTransaction(id) {
     if (this.lastOptions && confirm("Вы действительно хотите удалить эту транзакцию?")) {
-      Transaction.remove(// запускаем метод удаления транзакции
-        {id}, //первый аргумент, создаем обьект с данными и сразу записываем туда данные id переданные при вызове метода удаления
+      Transaction.remove(
+        {id},
 
-        (err, response) => {//второй аргумент - колбек, задаю его:
+        (err, response) => {
           if(err) {
-            console.log(err);// если ошибка при запросе
+            console.log(err);
   
-          } else if (response.success) {// если запрос успешный
-            console.log("успешный запрос удаления транзакции, ответ:");
-            console.log(response);
-
-            App.update(); // обновляем приложение (либо обновляем текущую страницу (метод update) и виджет со счетами)
+          } else if (response.success) {
+            App.update();
 
           } else if (!response.success) {
             console.error(response);
@@ -133,31 +117,20 @@ class TransactionsPage {
   Получает список Transaction.list и полученные данные передаёт в TransactionsPage.renderTransactions()
   */
   render(options) {
-    //если options есть, если есть хоть какой-то выбранный счет по которому нужно отобразить информацию о транзакциях (если на него нажали и его id записалось в свойство this.lastOptions (это делается в AccountsWidget.js примерно в строке 100 )), то:
     if (options) {
-      Account.get( //получаем данные о выбранном счете и выполняем нужные действия:
-        options.account_id, //первый аргумент данные id хранящиеся в св-ве lastOptions
+      Account.get(
+        options.account_id,
         
-        (err, response) => {//второй аргумент - колбек, задаю его:
+        (err, response) => {
           if(err) {
-            console.log(err);// если ошибка при запросе
+            console.log(err);
   
-          } else if (response.success) {// если запрос успешный
-            console.log("успешный запрос получения данных о счете, ответ:");
-            console.log(response);
-  
-            console.log(this.lastOptions);
-  
-            this.renderTitle(response.data.name);//вызываем метод .renderTitle() для отображения имени счета в заголовке и передаем туда его имя
+          } else if (response.success) {
+            this.renderTitle(response.data.name);
 
-            /* 
-            так как при добавлении/удалении транзакций все обновляется и список счетов с итоговыми суммами перерисовывается (а у них у всех изначально активным никто вы установлен и поэтому список транзакций не отрисовывается), 
-            ТО МЫ НАХОДИМ все счета, ИЩЕМ у кого dataset.id совпадает номером счета над которым последние действия делались или он был выбран ранее (это номер счета, который был последним передан в свойство-объект .lastOptions) и ВОЗВРАЩАЕМ ему класс .active, чтобы отражался список транзакций нужного нам активного счета:
-            */
+            let accounts = Array.from(document.querySelectorAll("ul.accounts-panel li.account"));
 
-            let accounts = Array.from(document.querySelectorAll("ul.accounts-panel li.account"));//ищем существующие счета этого пользователя и формируем из них массив
-
-            accounts.find((elm) => elm.dataset.id === this.lastOptions.account_id).classList.add("active");//ищем у какого их них номер совпадает с последним номером счета в .lastOptions.account_id(над которыми действия делались или он был выбран ранее) и добавляем ему класс active, чтобы именно он и отрисовался на странице транзакций и светился выбранным.
+            accounts.find((elm) => elm.dataset.id === this.lastOptions.account_id).classList.add("active");
   
           } else if (!response.success) {
             console.error(response);
@@ -166,19 +139,15 @@ class TransactionsPage {
           };
         });
 
-        Transaction.list(// получаем список транзакций по выбранному счету и выполняем нужные действия:
-          {account_id: this.lastOptions.account_id}, //первый аргумент, создаем обьект с данными и сразу записываем туда данные id хранящиеся в св-ве lastOptions
+        Transaction.list(
+          {account_id: this.lastOptions.account_id},
         
-          (err, response) => {//второй аргумент - колбек, задаю его:
+          (err, response) => {
             if(err) {
-              console.log(err);// если ошибка при запросе
+              console.log(err);
     
-            } else if (response.success) {// если запрос успешный
-              console.log("успешный запрос получения списка транзакций по выбранному счету, ответ:");
-              console.log(response);
-    
-              this.renderTransactions(response.data); //вызываем метод .renderTransactions() для отрисовыки на странице всех транзакций по этому счету и передаем туда полученные данные 
-              console.log(response.data);
+            } else if (response.success) {
+              this.renderTransactions(response.data);
 
             } else if (!response.success) {
               console.error(response);
@@ -194,20 +163,17 @@ class TransactionsPage {
   Устанавливает заголовок: «Название счёта»
   */
   clear() {
-    this.renderTransactions([]);//перерисовываем страницу транзакций из данных пустого массива
+    this.renderTransactions([]);
 
-    this.renderTitle("Название счёта");//Задаём первоначальный заголовок счёта
+    this.renderTitle("Название счёта");
 
-    this.lastOptions = null;//Удаляем содержимое из lastOptions
-
+    this.lastOptions = null;
   };
 
   
   //Устанавливает нужный заголовок в элемент .content-title (заголовок списка транзакций по конкретному счету - имя счета)
   renderTitle(name) {
-    console.log("запустили метод renderTitle()");
-
-    this.element.querySelector(".content-title").textContent = name;// ищем элемент заголовка и устанавливаем ему имя
+    this.element.querySelector(".content-title").textContent = name;
   };
 
   /** !!!!! ПОЗЖЕ
@@ -261,13 +227,8 @@ class TransactionsPage {
   
   //Отрисовывает список транзакций на странице спользуя getTransactionHTML
   renderTransactions(data) {
-    console.log(data)
+    this.element.querySelector(".content").innerHTML = "";
 
-    console.log("запустили метод renderTransactions()");
-
-    this.element.querySelector(".content").innerHTML = "";//сначала очищаем предыдущий список транзакций
-
-    // для каждого элемента из массива полученных данных (транзакций по выбранному счету) выполняем действие: добавляем в список транзакций отображаемых на странице в HTML разметку каждый элемент (транзакцию), предварительно создав для нее HTML разметку используя метод .getTransactionHTML()
     data.forEach((elm) => {
       this.element.querySelector(".content").innerHTML += this.getTransactionHTML(elm);
     });

@@ -26,15 +26,12 @@ class AccountsWidget {
   вызывает AccountsWidget.onSelectAccount()
   */
   registerEvents() {
-    //задаем обработчик на всю панель счетов, так как счетов изначально нет в HTML, а при их добавлении переписывается HTML и снимаются обработчики
     this.element.onclick = (event) => {
-      if (event.target.closest(".create-account")) {//если нажали на элемент, ближайший родитель которого имеет класс create-account(если элемент на который нажали находится в рамках элемента с классом create-account), то это кнопка создать счет  - открываем окно создания счета
+      if (event.target.closest(".create-account")) {
         App.modals.createAccount.open();
 
-      } else if (event.target.closest(".account")) {//Если нажали на элемент, ближайший родитель которого имеет класс .account, то значит это элемент счета:
-        this.onSelectAccount(event.target.closest(".account")); //вызываем метод меняющий класс выбранному счету и вызывающий страницу с транзакциями. Выбранный счет = event.target.closest(".account") это ближайший родитель с классом account элемента инициатора события(на который нажал пользователь).
-
-        //return false;//при нажатии на ссылки (а) и так ссылка никуда не перебрасывает
+      } else if (event.target.closest(".account")) {
+        this.onSelectAccount(event.target.closest(".account"));
       };
     };
   };
@@ -46,21 +43,18 @@ class AccountsWidget {
   Отображает список полученных счетов с помощью метода renderItem()
   */
   update() {
-    if (User.current()) { // если авторизованный юзер есть:
-      Account.list( //вызываю список его счетов с нужными аргументами:
-        User.current(), //первый аргумент - data - данные активного юзера
+    if (User.current()) {
+      Account.list(
+        User.current(),
 
-        (err, response) => { //второй аргумент - колбек, задаю его:
+        (err, response) => {
           if(err) {
-            console.error(err); // если ошибка при запросе
+            console.error(err);
 
-          } else if (response.success) {//если пришел пустой массив, то тоже выполняю действие (перерисовываю список счетов), а то вдруг другой пользователь зашел и у него нет счетов - при входе надо перерисовать страницу на пустой список счетов.
-            console.log("успешный запрос списка счетов, ответ:");
-            console.log(response);
+          } else if (response.success) {
+            this.clear();
 
-            this.clear(); //очищаю список ранее отображённых счетов
-
-            this.renderItem(response.data); //запускаю метод renderItem() для отрисовки счетов из полученных данных
+            this.renderItem(response.data);
           };
       });
     };
@@ -69,11 +63,10 @@ class AccountsWidget {
 
   //Очищает список ранее отображённых счетов. Для этого необходимо удалять все элементы .account в боковой колонке
   clear() {
-    //находим все счета этого пользователя в разметке
     const accounts = document.querySelectorAll("ul.accounts-panel li.account");
 
-    accounts.forEach((account) => { //для каждого счета
-      account.remove(); //удаляем каждый счет
+    accounts.forEach((account) => {
+      account.remove();
     });
   };
 
@@ -83,37 +76,23 @@ class AccountsWidget {
   Удаляет ранее выбранному элементу счёту класс .active.
   Вызывает App.showPage( 'transactions', { account_id: id_счёта });
   */
-  onSelectAccount(element) { //получаем счет на который нажал пользователь
+  onSelectAccount(element) {
+    if(element.className.includes("active")) {//если нажали на счет у которого и так класс active - то закрываем его
+      element.classList.remove("active");
 
-    console.log("выбрали счет")
-    console.log(element)
+      App.pages.transactions.clear();
 
-    if(element.className.includes("active")) {//если нажали на счет у которого и так класс active
-      console.log("нажали на и так активный класс, поэтому его удалим");
+      return;
 
-      element.classList.remove("active"); // удаляем ему активный класс - закрываем его
-
-      App.pages.transactions.clear();// раз пользователь сам закрыл единственный активный счет, то очищаем страницу с отображением транзакций по счету
-
-      return;// больше действий не нужно, пока опять не нажали на какой-то счет, выходим из метода
-
-    } else if (element.closest(".accounts-panel").querySelector(".active")) {// если нажали не на активный счет, а любой другой, то
-      element.closest(".accounts-panel").querySelector(".active").classList.remove("active");//ищем у кого ранее был активный класс и убираем ему класс active
+    } else if (element.closest(".accounts-panel").querySelector(".active")) {
+      element.closest(".accounts-panel").querySelector(".active").classList.remove("active");
     };
 
-    console.log("убрали активный класс прежнему элементу");
-
-    element.classList.add("active");//переданному элементу (на который нажали) устанавливаем класс .active
-
-    console.log("поменяли активный класс у счета");
-    console.log(element);
-    console.log({account_id: `${element.dataset.id}`});
+    element.classList.add("active");
 
     App.pages.transactions.lastOptions = {account_id: `${element.dataset.id}`};// записали номер счета в свойство lastOptions у страницы отображения транзакций по этому счету (чтобы запомнить номер последнего выбранного счета)
 
     App.showPage('transactions', App.pages.transactions.lastOptions); //вызывает страницу с транзакциями по этому счету
-    
-    console.log("сработало после вызова страницы транзакций по этому счету");
   };
 
   
@@ -134,21 +113,8 @@ class AccountsWidget {
   Отображает полученный с помощью метода AccountsWidget.getAccountHTML HTML-код элемента и добавляет его внутрь элемента виджета
   */
   renderItem(data){
-    data.forEach((elm) => {//для каждого элемента массива(счета) 
-      //нахожу панель для отображения существующих счетов и добавляю пустой элемент в разметку к уже существующей
+    data.forEach((elm) => {
       document.querySelector(".accounts-panel").innerHTML += this.getAccountHTML(elm);
-
-      /* 
-      длинный путь через создание нового элемента, его вставки в панель счетов и установления ему нового значения (замены его содержимого включая замену его самого):
-
-      let htmlAccountItem = this.getAccountHTML(elm);//получаю созданную HTML разметку (строку) через метод .getAccountHTML
-      
-      let elmAccountItem = document.createElement("li"); //создаю пустой элемент списка счетов
-
-      document.querySelector(".accounts-panel").appendChild(elmAccountItem);//нахожу панель для отображения существующих счетов и добавляю пустой элемент в разметку
-
-      elmAccountItem.outerHTML = htmlAccountItem; // устанавливаю HTML разметку этому элементу (изменяя его самого включительно)
-      */
     });
   };
 };

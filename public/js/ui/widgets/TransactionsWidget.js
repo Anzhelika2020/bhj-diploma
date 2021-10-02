@@ -21,16 +21,6 @@ class TransactionsWidget {
   Регистрирует обработчики нажатия на кнопки «Новый доход» и «Новый расход».
   При нажатии вызывает Modal.open() для экземпляра окна
   */
-
-/* или так:
-  registerEvents() {
-    document.querySelector(".create-income-button").addEventListener("click", () => App.getModal("newIncome").open());
-
-    document.querySelector(".create-expense-button").addEventListener("click", () => App.getModal("newExpense").open());
-  };
-*/
-
-  //или так:
   registerEvents() {
     document.querySelector(".create-income-button").onclick  = () => App.getModal("newIncome").open();
 
