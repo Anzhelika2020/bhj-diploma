@@ -176,10 +176,32 @@ class TransactionsPage {
     this.element.querySelector(".content-title").textContent = name;
   };
 
-  /** !!!!! ПОЗЖЕ
-   * Форматирует дату в формате 2019-03-10 03:20:41 (строка)
-   * в формат «10 марта 2019 г. в 03:20»
-   * */
+  /* formatDate(date) !!!!! ПОЗЖЕ
+  Форматирует дату в формате 2019-03-10 03:20:41 (строка)
+  в формат «10 марта 2019 г. в 03:20»
+  
+  Форматирует дату в формате 2019-03-10 03:20:41 (строка)
+  в формат «10 марта 2019 г. в 03:20»
+
+  По форматированию, могу посоветовать использовать методы toLocaleTimeString и toLacaleDateString:  
+   
+  formatDate(date) {
+    const dateObject = new Date(date);
+    const time = dateObject.toLocaleTimeString("ru-Ru", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    const day = dateObject.toLocaleDateString("ru-Ru", {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
+    return `${day} в ${time}`;
+  }
+
+  */
   formatDate(date) {
     console.log(date)
     

@@ -31,6 +31,7 @@ class Modal {
   onClose() {
     this.close();
     this.element.querySelector(".form").reset();
+    //this.element.reset();// или так - короче будет
   };
 
 //Открывает окно: устанавливает CSS-свойство display со значением «block»
