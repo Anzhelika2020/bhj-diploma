@@ -30,7 +30,7 @@ class Modal {
 //при нажатии на кнопку закрытия: 
   onClose() {
     this.close(); // вызывает метод закрытия окна
-    this.element.querySelector(".form").reset(); // очищает форму при закрытии
+    this.element.reset();// очищает форму при закрытии (очищает все модальное окно и форму в нем), вместо длинного: this.element.querySelector(".form").reset();
   }
 
 //Открывает окно: устанавливает CSS-свойство display со значением «block»
